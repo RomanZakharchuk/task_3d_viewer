@@ -1,30 +1,34 @@
-let scene;
-let camera;
-let renderer;
+'use strict';
 
 function init() {
 
-  scene = new THREE.Scene();
+  // Scene
+  const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf7f7f7);
 
-  camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+  // Camera
+  const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 0, 10);
 
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
 
   document.body.appendChild(renderer.domElement);
 
+  // Ambient Light
   const ambientLight = new THREE.AmbientLight(0x505050, 4);
   scene.add(ambientLight);
 
+  // Directional light
   const light = new THREE.DirectionalLight(0x424242, 1);
   light.position.set(0, 2, 2);
   light.target.position.set(0, 0, 0);
   light.castShadow = true;
   scene.add(light);
 
+  // Floor
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 10),
     new THREE.MeshPhongMaterial({ color: 0x777777, flatShading: true }));
   mesh.rotation.x = - Math.PI / 2;
@@ -33,9 +37,11 @@ function init() {
   mesh.receiveShadow = true;
   scene.add(mesh);
 
+  // Controls
   const controls = new THREE.OrbitControls(camera, render.domElement);
   controls.update();
 
+  // Skull loader
   const loader = new THREE.GLTFLoader();
   loader.load('./skullGLTF/scene.gltf', function (gltf) {
     scene.add(gltf.scene);
@@ -51,7 +57,6 @@ function init() {
     renderer.render(scene, camera);
   }
 
-  render();
   animate();
 
   function onWindowResize() {
